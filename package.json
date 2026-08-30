@@ -1,18 +1,29 @@
 {
-  "name": "<package-name>",
+  "name": "@makeitaquote/voids",
   "version": "0.0.0",
-  "description": "<package-description>",
-  "keywords": [],
-  "homepage": "<package-git>#readme",
+  "description": "Generate \"Make it a Quote\" images via an external API.",
+  "keywords": [
+    "img",
+    "image",
+    "gen",
+    "generate",
+    "miq",
+    "makeitaquote",
+    "Make it a Quote",
+    "quote",
+    "discord",
+    "canvas"
+  ],
+  "homepage": "https://github.com/otnc/makeitaquote-voids#readme",
   "bugs": {
-    "url": "<package-git>/issues"
+    "url": "https://github.com/otnc/makeitaquote-voids/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+<package-git>.git"
+    "url": "git+https://github.com/otnc/makeitaquote-voids.git"
   },
-  "license": "<package-license>",
-  "author": "<package-author>",
+  "license": "MIT",
+  "author": "otoneko.",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
