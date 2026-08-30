@@ -36,3 +36,23 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run check:build
+
+  # engines.node is >=18, but the build tooling itself (tsdown, vitest)
+  # requires Node 22+ and cannot run on 18. So the floor is verified the
+  # other way round: build with the toolchain's Node, then load the
+  # resulting dist/ under the oldest Node we actually claim to support.
+  floor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npm run build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: node -e "const {VoidsMiQ,MiQ}=require('./dist/index.cjs'); if (typeof VoidsMiQ!=='function'||typeof MiQ!=='function') throw new Error('CJS entry did not export VoidsMiQ/MiQ on Node 18')"
+      - run: node --input-type=module -e "import('./dist/index.mjs').then(m=>{if(typeof m.VoidsMiQ!=='function'||typeof m.MiQ!=='function')throw new Error('ESM entry did not export VoidsMiQ/MiQ on Node 18')})"
