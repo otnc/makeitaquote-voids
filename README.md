@@ -41,7 +41,7 @@ new VoidsMiQ()
   .then((png) => writeFile('quote.png', png))
 ```
 
-Requires Node.js 22 or newer.
+Requires Node.js 18 or newer. On 18 and 20, Node prints an `ExperimentalWarning` about the Fetch API the first time this package runs — harmless, and gone as of Node 21.
 
 ---
 
