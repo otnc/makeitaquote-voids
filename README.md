@@ -6,6 +6,18 @@ Generate "Make it a Quote" images through the Voids API.
 
 Calls the Voids API instead of rendering locally — no native binaries, no fonts, works anywhere Node.js runs.
 
+| Default (`dark`) | `color` |
+| --- | --- |
+| ![Sample quote image, default dark theme](assets/readme/mono.png) | ![Sample quote image, color theme](assets/readme/color.png) |
+
+> [!IMPORTANT]
+>   
+> This package only calls the Voids API — it does not render images locally. If you want local rendering instead (no network dependency, more control over the theme), use [`makeitaquote`](https://github.com/otnc/makeitaquote):
+>
+> ```sh
+> npm install makeitaquote
+> ```
+
 > The Voids API (`https://api.voids.top`) is not operated by this package's developer. Please don't open issues here about it being down.
 
 ```sh
@@ -51,7 +63,6 @@ Requires Node.js 18 or newer. On 18 and 20, Node prints an `ExperimentalWarning`
 - [Endpoints](#endpoints) — `toURL()` vs `toBuffer()`
 - [Errors](#errors)
 - [Migrating from `makeitaquote/api`](#migrating-from-makeitaquoteapi)
-- [Local rendering instead](#local-rendering-instead)
 - [Author](#author) · [Licence](#licence)
 
 ---
@@ -137,12 +148,6 @@ If you use both packages, check `error.name` instead, or catch each package's er
 ```
 
 Class name, method names, error types and defaults are all identical — the only change is the import.
-
----
-
-## Local rendering instead
-
-This package only calls a third-party API. For rendering images locally — no network dependency, more control over the theme — see [`makeitaquote`](https://github.com/otnc/makeitaquote).
 
 ---
 
