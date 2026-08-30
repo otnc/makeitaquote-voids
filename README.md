@@ -10,15 +10,17 @@ Calls the Voids API instead of rendering locally — no native binaries, no font
 | --- | --- |
 | ![Sample quote image, default dark theme](assets/readme/mono.png) | ![Sample quote image, color theme](assets/readme/color.png) |
 
-> [!IMPORTANT]
+> [!Note]
 >   
-> This package only calls the Voids API — it does not render images locally. If you want local rendering instead (no network dependency, more control over the theme), use [`makeitaquote`](https://github.com/otnc/makeitaquote):
+> The Voids API (`https://api.voids.top`) is not operated by this package's developer. Please don't open issues here about it being down.
+
+> [!Important]
+>   
+> This package only calls the Voids API — it does not render images locally. If you want local rendering instead (no network dependency, more control over the theme), use `makeitaquote`: https://github.com/otnc/makeitaquote
 >
 > ```sh
 > npm install makeitaquote
 > ```
-
-> The Voids API (`https://api.voids.top`) is not operated by this package's developer. Please don't open issues here about it being down.
 
 ```sh
 npm install @makeitaquote/voids
