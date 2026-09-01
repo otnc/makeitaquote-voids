@@ -21,6 +21,12 @@ Calls the Voids API instead of rendering locally — no native binaries, no font
 > ```sh
 > npm install makeitaquote
 > ```
+>   
+> Prefer a different upstream API instead? [`@makeitaquote/miqx`](https://github.com/otnc/makeitaquote-miqx) does the same thing this package does, through the MiqX API:
+>
+> ```sh
+> npm install @makeitaquote/miqx
+> ```
 
 ```sh
 npm install @makeitaquote/voids
