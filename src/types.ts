@@ -121,6 +121,77 @@ export interface MessageSourceOptions {
   resolveMentions?: boolean | MentionOptions
 }
 
+/**
+ * The shape of a tweet/post that `setFromTweet()` understands.
+ *
+ * Structural, like `MessageLike` — but unlike it, there is no single wire
+ * format to match: the official API v2 splits a tweet from its author
+ * (`author_id`, resolved through a separate `includes.users` array), and
+ * FxTwitter spells the fields differently (`screen_name`, `avatar_url`).
+ * `fromTwitterApiV2Tweet()` and `fromFxTwitterStatus()` adapt each into this
+ * shape.
+ */
+export interface TweetLike {
+  text: string
+  author: {
+    /** Handle, without the leading `@`. */
+    username: string
+    /** Display name. Falls back to the handle when absent. */
+    name?: string | null
+    avatarUrl?: string | null
+  }
+}
+
+export interface TweetSourceOptions {
+  /**
+   * Normalizes "Twitter bold/italic" — Unicode Mathematical Alphanumeric
+   * Symbols — back to plain ASCII before quoting it. Default false — quoted
+   * exactly as written, styled characters and all.
+   */
+  stripTwitterText?: boolean
+}
+
+/**
+ * The shape of a Misskey note that `setFromNote()` understands.
+ *
+ * Structural, like `MessageLike`: this is what the API actually returns for
+ * a note, so a response passed straight through fits without adaptation.
+ */
+export interface NoteLike {
+  text?: string | null
+  /** Content warning. Only read when `preferCw` is true. */
+  cw?: string | null
+  user: {
+    username: string
+    /** Display name. Null when the account never set one. */
+    name?: string | null
+    /** Instance the author is on. Null or absent when they are local. */
+    host?: string | null
+    avatarUrl?: string | null
+  }
+}
+
+export interface NoteSourceOptions {
+  /**
+   * Runs the note through `stripMfm()` before quoting it. Default **true**,
+   * unlike `stripDiscordMarkdown` for Discord.
+   *
+   * The two differ because the markup does. `**bold**` still reads as its
+   * own text with the asterisks left in; `$[jelly ぷりん]` does not — the
+   * function name and brackets are scaffolding that was never meant to be
+   * read, so leaving them in a picture is just noise.
+   */
+  stripMfm?: boolean
+  /**
+   * Quote the content warning instead of the text it hides. Default false.
+   *
+   * A CW is what a reader saw *before* choosing to open the note, so it is
+   * occasionally the honest thing to quote — but the note itself is the
+   * usual intent.
+   */
+  preferCw?: boolean
+}
+
 /** A quote as sent to and received from the Voids API. */
 export interface VoidsQuoteData extends QuoteData {
   /** Keeps the avatar in color. Sent verbatim to the API. */

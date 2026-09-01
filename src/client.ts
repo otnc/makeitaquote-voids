@@ -3,6 +3,7 @@ import { createClient, HTTPError, type HttpClient, TimeoutError } from '@makeita
 import { normalizeAvatarSource, normalizeString } from '@makeitaquote/utils/validation'
 import { DEFAULT_BASE_URL, type EndpointPath, endpoints } from './endpoints'
 import { ValidationError, VoidsApiError } from './errors'
+import { fromNote } from './note'
 import {
   applyInput,
   assertRenderable,
@@ -12,10 +13,15 @@ import {
   MAX_WATERMARK_LENGTH,
 } from './quote'
 import { fromMessage } from './source'
+import { fromTweet } from './tweet'
 import type {
   MessageLike,
   MessageSourceOptions,
+  NoteLike,
+  NoteSourceOptions,
   QuoteInput,
+  TweetLike,
+  TweetSourceOptions,
   VoidsOptions,
   VoidsPayload,
   VoidsQuoteData,
@@ -96,6 +102,18 @@ export class VoidsMiQ {
   setFromMessage(message: MessageLike, options?: MessageSourceOptions): this {
     const { color } = this.#data
     this.#data = { ...fromMessage(message, options), color }
+    return this
+  }
+
+  setFromTweet(tweet: TweetLike, options?: TweetSourceOptions): this {
+    const { color } = this.#data
+    this.#data = { ...fromTweet(tweet, options), color }
+    return this
+  }
+
+  setFromNote(note: NoteLike, options?: NoteSourceOptions): this {
+    const { color } = this.#data
+    this.#data = { ...fromNote(note, options), color }
     return this
   }
 

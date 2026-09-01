@@ -153,6 +153,28 @@ describe('input', () => {
     expect(data.color).toBe(true)
   })
 
+  it('builds from a tweet and keeps the color flag', () => {
+    const data = new VoidsMiQ()
+      .setColor(true)
+      .setFromTweet({ text: 'Hello World!', author: { username: 'otoneko', name: '音猫｡' } })
+      .getData()
+
+    expect(data.text).toBe('Hello World!')
+    expect(data.displayName).toBe('音猫｡')
+    expect(data.color).toBe(true)
+  })
+
+  it('builds from a note and keeps the color flag', () => {
+    const data = new VoidsMiQ()
+      .setColor(true)
+      .setFromNote({ text: '$[jelly おはよう]', user: { username: 'otoneko', name: '音猫｡' } })
+      .getData()
+
+    expect(data.text).toBe('おはよう')
+    expect(data.displayName).toBe('音猫｡')
+    expect(data.color).toBe(true)
+  })
+
   it('merges partial objects', () => {
     const data = new VoidsMiQ()
       .setText('first')
