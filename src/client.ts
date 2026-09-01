@@ -1,15 +1,15 @@
+import { errorMessage } from '@makeitaquote/utils/errors'
+import { createClient, HTTPError, type HttpClient, TimeoutError } from '@makeitaquote/utils/http'
+import { normalizeAvatarSource, normalizeString } from '@makeitaquote/utils/validation'
 import { DEFAULT_BASE_URL, type EndpointPath, endpoints } from './endpoints'
 import { ValidationError, VoidsApiError } from './errors'
-import { createClient, HTTPError, type HttpClient, TimeoutError } from './http'
 import {
   applyInput,
   assertRenderable,
   emptyQuote,
-  normalizeAvatar,
-  normalizeDisplayName,
-  normalizeText,
-  normalizeUsername,
-  normalizeWatermark,
+  MAX_NAME_LENGTH,
+  MAX_TEXT_LENGTH,
+  MAX_WATERMARK_LENGTH,
 } from './quote'
 import { fromMessage } from './source'
 import type {
@@ -20,7 +20,6 @@ import type {
   VoidsPayload,
   VoidsQuoteData,
 } from './types'
-import { errorMessage } from './util/errorMessage'
 
 function emptyVoidsQuote(): VoidsQuoteData {
   return { ...emptyQuote(), color: false }
@@ -55,13 +54,13 @@ export class VoidsMiQ {
   }
 
   setText(text: string): this {
-    this.#data.text = normalizeText(text)
+    this.#data.text = normalizeString(text, 'text', MAX_TEXT_LENGTH)
     return this
   }
 
   /** The API only takes a URL, so buffers are rejected here. */
   setAvatar(avatar: string | URL | null): this {
-    const normalized = normalizeAvatar(avatar)
+    const normalized = normalizeAvatarSource(avatar, 'avatar')
     if (normalized !== null && typeof normalized !== 'string' && !(normalized instanceof URL)) {
       throw new ValidationError('The Voids API only accepts an avatar URL, not image data', {
         field: 'avatar',
@@ -72,12 +71,12 @@ export class VoidsMiQ {
   }
 
   setUsername(username: string): this {
-    this.#data.username = normalizeUsername(username)
+    this.#data.username = normalizeString(username, 'username', MAX_NAME_LENGTH)
     return this
   }
 
   setDisplayName(displayName: string): this {
-    this.#data.displayName = normalizeDisplayName(displayName)
+    this.#data.displayName = normalizeString(displayName, 'displayName', MAX_NAME_LENGTH)
     return this
   }
 
@@ -90,7 +89,7 @@ export class VoidsMiQ {
   }
 
   setWatermark(watermark: string): this {
-    this.#data.watermark = normalizeWatermark(watermark)
+    this.#data.watermark = normalizeString(watermark, 'watermark', MAX_WATERMARK_LENGTH)
     return this
   }
 

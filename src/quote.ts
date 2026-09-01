@@ -1,3 +1,4 @@
+import { normalizeAvatarSource, normalizeString } from '@makeitaquote/utils/validation'
 import { ValidationError } from './errors'
 import type { AvatarSource, QuoteData, QuoteInput } from './types'
 
@@ -7,57 +8,6 @@ export const MAX_WATERMARK_LENGTH = 64
 
 export function emptyQuote(): QuoteData {
   return { text: '', avatar: null, username: '', displayName: '', watermark: '' }
-}
-
-function assertString(value: unknown, field: string): asserts value is string {
-  if (typeof value !== 'string') {
-    throw new ValidationError(`${field} must be a string, received ${typeof value}`, { field })
-  }
-}
-
-function assertLength(value: string, max: number, field: string) {
-  if (value.length > max) {
-    throw new ValidationError(
-      `${field} must be at most ${max} characters, received ${value.length}`,
-      {
-        field,
-      },
-    )
-  }
-}
-
-export function normalizeText(text: unknown): string {
-  assertString(text, 'text')
-  assertLength(text, MAX_TEXT_LENGTH, 'text')
-  return text
-}
-
-export function normalizeUsername(username: unknown): string {
-  assertString(username, 'username')
-  assertLength(username, MAX_NAME_LENGTH, 'username')
-  return username
-}
-
-export function normalizeDisplayName(displayName: unknown): string {
-  assertString(displayName, 'displayName')
-  assertLength(displayName, MAX_NAME_LENGTH, 'displayName')
-  return displayName
-}
-
-export function normalizeWatermark(watermark: unknown): string {
-  assertString(watermark, 'watermark')
-  assertLength(watermark, MAX_WATERMARK_LENGTH, 'watermark')
-  return watermark
-}
-
-export function normalizeAvatar(avatar: unknown): AvatarSource | null {
-  if (avatar === null || avatar === undefined) return null
-  if (typeof avatar === 'string') return avatar
-  if (avatar instanceof URL) return avatar
-  if (avatar instanceof Uint8Array) return avatar
-  throw new ValidationError('avatar must be a string, URL, Buffer, Uint8Array or null', {
-    field: 'avatar',
-  })
 }
 
 /**
@@ -73,11 +23,19 @@ export function applyInput(target: QuoteData, input: QuoteInput): QuoteData {
 
   const next: QuoteData = { ...target }
 
-  if (input.text !== undefined) next.text = normalizeText(input.text)
-  if (input.avatar !== undefined) next.avatar = normalizeAvatar(input.avatar)
-  if (input.username !== undefined) next.username = normalizeUsername(input.username)
-  if (input.displayName !== undefined) next.displayName = normalizeDisplayName(input.displayName)
-  if (input.watermark !== undefined) next.watermark = normalizeWatermark(input.watermark)
+  if (input.text !== undefined) next.text = normalizeString(input.text, 'text', MAX_TEXT_LENGTH)
+  if (input.avatar !== undefined) {
+    next.avatar = normalizeAvatarSource(input.avatar, 'avatar') as AvatarSource | null
+  }
+  if (input.username !== undefined) {
+    next.username = normalizeString(input.username, 'username', MAX_NAME_LENGTH)
+  }
+  if (input.displayName !== undefined) {
+    next.displayName = normalizeString(input.displayName, 'displayName', MAX_NAME_LENGTH)
+  }
+  if (input.watermark !== undefined) {
+    next.watermark = normalizeString(input.watermark, 'watermark', MAX_WATERMARK_LENGTH)
+  }
 
   return next
 }

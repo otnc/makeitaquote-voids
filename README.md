@@ -134,15 +134,16 @@ MiQError
 └─ VoidsApiError      the API refused or failed (.status, .body, .endpoint)
 ```
 
-`@makeitaquote/voids` has its own `MiQError`/`ValidationError`, separate from `makeitaquote`'s:
+`MiQError`/`ValidationError` come from [`@makeitaquote/utils`](https://github.com/otnc/makeitaquote-utils) and are shared with `makeitaquote` and `@makeitaquote/miqx` — the same classes, not just the same names:
 
 ```ts
 import { MiQError } from 'makeitaquote'
 import { MiQError as VoidsMiQError } from '@makeitaquote/voids'
-// These are two different classes. instanceof is always false across them.
+// Same class. instanceof is true across packages.
+console.log(MiQError === VoidsMiQError) // true
 ```
 
-If you use both packages, check `error.name` instead, or catch each package's error class individually.
+`VoidsApiError` stays specific to this package.
 
 ---
 
