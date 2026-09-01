@@ -66,8 +66,7 @@
     "migrate": "biome migrate --write"
   },
   "dependencies": {
-    "discomd": "^1.2.0",
-    "ofetch": "^1.5.1"
+    "@makeitaquote/utils": "^1.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.11",

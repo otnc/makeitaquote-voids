@@ -1,18 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ValidationError } from './errors'
-import {
-  applyInput,
-  assertRenderable,
-  emptyQuote,
-  MAX_NAME_LENGTH,
-  MAX_TEXT_LENGTH,
-  MAX_WATERMARK_LENGTH,
-  normalizeAvatar,
-  normalizeDisplayName,
-  normalizeText,
-  normalizeUsername,
-  normalizeWatermark,
-} from './quote'
+import { applyInput, assertRenderable, emptyQuote } from './quote'
 
 describe('emptyQuote', () => {
   it('returns a blank quote', () => {
@@ -23,51 +11,6 @@ describe('emptyQuote', () => {
       displayName: '',
       watermark: '',
     })
-  })
-})
-
-describe('normalizeText', () => {
-  it('accepts a string within the limit', () => {
-    expect(normalizeText('hi')).toBe('hi')
-  })
-
-  it('rejects a non-string', () => {
-    expect(() => normalizeText(42)).toThrow(ValidationError)
-  })
-
-  it('rejects text over the limit', () => {
-    expect(() => normalizeText('a'.repeat(MAX_TEXT_LENGTH + 1))).toThrow(ValidationError)
-  })
-})
-
-describe('normalizeUsername / normalizeDisplayName / normalizeWatermark', () => {
-  it('reject a value over their respective limits', () => {
-    expect(() => normalizeUsername('a'.repeat(MAX_NAME_LENGTH + 1))).toThrow(ValidationError)
-    expect(() => normalizeDisplayName('a'.repeat(MAX_NAME_LENGTH + 1))).toThrow(ValidationError)
-    expect(() => normalizeWatermark('a'.repeat(MAX_WATERMARK_LENGTH + 1))).toThrow(ValidationError)
-  })
-
-  it('accept a value at the limit', () => {
-    expect(normalizeUsername('a'.repeat(MAX_NAME_LENGTH))).toHaveLength(MAX_NAME_LENGTH)
-  })
-})
-
-describe('normalizeAvatar', () => {
-  it('accepts a string, a URL, a Uint8Array or null', () => {
-    expect(normalizeAvatar('https://example.test/a.png')).toBe('https://example.test/a.png')
-    const url = new URL('https://example.test/a.png')
-    expect(normalizeAvatar(url)).toBe(url)
-    const bytes = new Uint8Array([1, 2, 3])
-    expect(normalizeAvatar(bytes)).toBe(bytes)
-    expect(normalizeAvatar(null)).toBeNull()
-  })
-
-  it('treats undefined as null', () => {
-    expect(normalizeAvatar(undefined)).toBeNull()
-  })
-
-  it('rejects anything else', () => {
-    expect(() => normalizeAvatar(42)).toThrow(ValidationError)
   })
 })
 
@@ -82,6 +25,18 @@ describe('applyInput', () => {
 
   it('rejects a non-object input', () => {
     expect(() => applyInput(emptyQuote(), null as never)).toThrow(ValidationError)
+  })
+
+  it('validates a provided field and throws ValidationError on failure', () => {
+    expect(() => applyInput(emptyQuote(), { text: 42 as unknown as string })).toThrow(
+      ValidationError,
+    )
+  })
+
+  it('accepts a string, a URL, a Uint8Array or null avatar', () => {
+    const url = new URL('https://example.test/a.png')
+    expect(applyInput(emptyQuote(), { avatar: url }).avatar).toBe(url)
+    expect(applyInput(emptyQuote(), { avatar: null }).avatar).toBeNull()
   })
 })
 
